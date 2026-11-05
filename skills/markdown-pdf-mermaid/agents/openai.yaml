@@ -1,0 +1,3 @@
+interface:
+  display_name: "Markdown PDF with Mermaid"
+  short_description: "Create PDFs that render Mermaid diagrams"
