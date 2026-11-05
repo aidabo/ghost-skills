@@ -1,0 +1,18 @@
+{
+  "name": "markdown-pdf-mermaid-skill",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Local runtime dependencies for the markdown-pdf-mermaid Codex skill",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test tests/export-pdf.test.cjs",
+    "export-pdf": "node scripts/export-pdf.cjs"
+  },
+  "dependencies": {
+    "@mermaid-js/mermaid-cli": "11.17.0",
+    "markdown-it": "15.0.2",
+    "puppeteer": "24.40.0"
+  }
+}
