@@ -1,0 +1,47 @@
+{
+  "fps": 30,
+  "width": 1080,
+  "height": 1920,
+  "lang": "ja",
+  "theme": { "paper": "#f7efe2", "paper2": "#f3ead9", "ink": "#3d3229", "accent": "#a8502f", "muted": "#7a6a5a" },
+  "screenshot": { "width": 1170, "height": 2532 },
+  "presenter": { "still": "face.jpg", "leadFrames": 10 },
+  "numbered": true,
+  "scenes": [
+    {
+      "type": "title",
+      "title": "家族の思い出を\nあたたかく残す場所",
+      "body": "マイホームのご紹介",
+      "narration": "家族の思い出を、あたたかく残す場所。マイホームをご紹介します。",
+      "face": "face/s1.mp4",
+      "frames": 0
+    },
+    {
+      "img": "s01.png",
+      "kicker": "マイホーム",
+      "title": "ログインすると、家族の場所",
+      "body": "家族の顔と、今月の思い出の数が\nいちばん上に見えます。",
+      "narration": "ログインすると、まずマイホーム。家族の顔と、今月の思い出の数が見えます。",
+      "face": "face/s2.mp4",
+      "frames": 0
+    },
+    {
+      "img": "s03.png",
+      "kicker": "ひとこと送る",
+      "title": "短いひとことから",
+      "body": "タイトルは無くても大丈夫。\nAI が書き方を手伝います。",
+      "pan": 0.15,
+      "narration": "ひとこと送るは、短い言葉からで大丈夫。書き方は、AIが手伝います。",
+      "voice": "voice/s3.wav",
+      "frames": 0
+    },
+    {
+      "type": "title",
+      "title": "話して、書いて、\n家族と残す",
+      "body": "携帯ひとつで、\n年配の方にもやさしく",
+      "narration": "話して、書いて、家族と残す。携帯ひとつで、年配の方にもやさしく。",
+      "voice": "voice/s4.wav",
+      "frames": 0
+    }
+  ]
+}
