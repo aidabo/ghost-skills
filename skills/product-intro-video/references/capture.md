@@ -17,7 +17,8 @@ const browser = await chromium.launch({ executablePath: process.env.CHROME_BIN }
 const context = await browser.newContext({ ...devices["iPhone 13"], viewport: { width: 390, height: 844 }, locale: "ja-JP" });
 await context.addInitScript(() => { try { localStorage.setItem("preferred-locale", "ja"); } catch {} });
 // Log in through the API so the session cookie is shared by every page (Ghost admin session shown).
-await context.request.post(`${BASE}/ghost/api/admin/session/`, { data: { username: user, password: pass }, headers: { Origin: BASE } });
+const login = await context.request.post(`${BASE}/ghost/api/admin/session/`, { data: { username: user, password: pass }, headers: { Origin: BASE } });
+if (!login.ok()) throw new Error(`login failed: HTTP ${login.status()}`); // otherwise every shot is the sign-in page
 const page = await context.newPage();
 page.on("filechooser", () => {}); // buttons that open a file picker: open, choose nothing
 

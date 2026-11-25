@@ -75,6 +75,10 @@ if (missing.length) {
   console.error(`set ${missing.join(", ")} in the environment`);
   process.exit(2);
 }
+if (!/^https:\/\//.test(baseUrl)) {
+  console.error("WAN3_API_BASE_URL must be https:// (the API key is sent with every request)");
+  process.exit(2);
+}
 const { createWan3Provider, createWan3HttpTransport } = await import(pathToFileURL(path.resolve(modulePath)).href);
 const providerModel = process.env.WAN3_MODEL || "wan3.0-video";
 const transport = createWan3HttpTransport({ baseUrl, apiKey, providerModel });
@@ -101,7 +105,11 @@ for (const p of todo) {
     console.log(` ${r.status}`);
     if (!r.video_url) throw new Error(`no video (${r.code || r.status})`);
     const res = await fetch(r.video_url);
-    fs.writeFileSync(p.out, Buffer.from(await res.arrayBuffer()));
+    if (!res.ok) throw new Error(`download failed: HTTP ${res.status}`);
+    // Write to a temp name first so a broken download is never mistaken for a finished line on re-runs.
+    const part = `${p.out}.part`;
+    fs.writeFileSync(part, Buffer.from(await res.arrayBuffer()));
+    fs.renameSync(part, p.out);
     console.log(`saved ${p.out}`);
   } catch (e) {
     failed += 1;

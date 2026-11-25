@@ -41,6 +41,10 @@ for (const s of doc.scenes) {
   execFileSync("ffmpeg", ["-loglevel", "error", "-y", "-ss", t.toFixed(3), "-i", video, "-frames:v", "1", "-vf", `scale=${width}:-2`, png]);
   console.log(`scene ${n} @ ${t.toFixed(2)}s  ${s.title.replace(/\n/g, " ")}`);
 }
+if (n === 0) {
+  console.error("the video ends before the first scene's sample point; check-frames needs a full render (or use a smaller --at)");
+  process.exit(1);
+}
 const rows = Math.ceil(n / cols);
 fs.mkdirSync(path.dirname(path.resolve(arg("out"))), { recursive: true });
 execFileSync("ffmpeg", [

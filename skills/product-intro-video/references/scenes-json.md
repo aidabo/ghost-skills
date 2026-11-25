@@ -38,6 +38,13 @@ Scene fields:
 | `face` | talking-head video; its own audio is played (see pitfalls: Wan3 drift) |
 | `frames` | scene length; `durations.mjs` fills it from `face` or `voice` |
 
-To produce the narration file for TTS: `node -e 'for (const s of require("./scenes.json").scenes) console.log(s.narration)' > narration.txt`. Line N becomes `sN.wav`, so keep scene order and narration order identical.
+File names follow scene numbers: scene N uses `voice/sN.wav` and `face/sN.mp4` (the TTS script writes line N as `sN.wav`, and `wan3-lipsync.mjs` turns `sN.wav` into `sN.mp4`). Give every scene a narration line so the numbers cannot shift; a scene that should stay silent simply has no `voice`/`face`, and its generated file is not used.
+
+To produce the narration file for TTS (fails if a scene has no narration, instead of reading "undefined"):
+
+```sh
+node -e 'const d = require(require("path").resolve(process.argv[1]));
+d.scenes.forEach((s, i) => { if (!s.narration) throw new Error(`scene ${i + 1} has no narration`); console.log(s.narration.replace(/\n/g, " ")); });' scenes.json > narration.txt
+```
 
 Language versions: copy the JSON, change `lang`, the texts, the captures (shot in that UI language) and the media paths; render each separately.

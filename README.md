@@ -4,7 +4,7 @@ Shared Codex skills for projects in the legacy workspace.
 
 ## Repository layout
 
-Each installable skill lives in `skills/<skill-name>/` and has a `SKILL.md` entrypoint. Optional skill-specific files stay inside that package: `agents/openai.yaml` for UI metadata, and `scripts/`, `references/`, or `assets/` only when needed.
+Each installable skill lives in `skills/<skill-name>/` and has a `SKILL.md` entrypoint. Optional skill-specific files stay inside that package: `agents/openai.yaml` for UI metadata, and `scripts/`, `references/`, `examples/` (sample inputs), or `assets/` only when needed.
 
 ## Skills
 

@@ -22,6 +22,8 @@ Locate this skill's directory from the loaded `SKILL.md`. Install its dependenci
 
 ## Notes
 
+- Remotion is not MIT: its license is free for individuals and small companies but needs a company license for larger for-profit organisations. Confirm it applies before using this for a client or a larger organisation.
+- File names follow scene numbers (`voice/sN.wav`, `face/sN.mp4` for scene N); see `references/scenes-json.md`.
 - Subtitles: do not burn them in by default. A media job can add them later per language, and burned text cannot be removed.
 - For quick iterations render a range: `--frames 0-299`.
 - Costs, consent, tenant boundaries and environment pitfalls: `references/pitfalls.md`. Read it before step 3 the first time.

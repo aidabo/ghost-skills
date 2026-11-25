@@ -159,7 +159,7 @@ const Shot: React.FC<{ c: Ctx; s: Scene; n: number }> = ({ c, s, n }) => {
           {p.numbered === false ? "" : `${String(n).padStart(2, "0")}${sep}`}
           {s.kicker ?? ""}
         </div>
-        <div style={{ fontFamily: c.serif, color: t.ink, fontSize: 66 * k, marginTop: 18 * k, lineHeight: 1.35 }}>{s.title}</div>
+        <div style={{ fontFamily: c.serif, color: t.ink, fontSize: 66 * k, marginTop: 18 * k, lineHeight: 1.35, whiteSpace: "pre-line" }}>{s.title}</div>
         {s.body ? <div style={{ color: t.muted, fontSize: 38 * k, marginTop: 22 * k, whiteSpace: "pre-line", lineHeight: 1.6 }}>{s.body}</div> : null}
       </div>
       <div

@@ -12,8 +12,6 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { bundle } from "@remotion/bundler";
-import { renderMedia, selectComposition } from "@remotion/renderer";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const args = process.argv.slice(2);
@@ -25,6 +23,10 @@ if (args.includes("--help") || !arg("scenes") || !arg("public") || !arg("out")) 
   console.log("usage: render.mjs --scenes <scenes.json> --public <dir> --out <file.mp4> [--browser <path>] [--port <n>] [--frames a-b] [--concurrency n] [--crf n]");
   process.exit(args.includes("--help") ? 0 : 2);
 }
+
+// Remotion is imported only after the usage check so --help works before `npm install`.
+const { bundle } = await import("@remotion/bundler");
+const { renderMedia, selectComposition } = await import("@remotion/renderer");
 
 const scenesFile = path.resolve(arg("scenes"));
 const publicDir = path.resolve(arg("public"));
