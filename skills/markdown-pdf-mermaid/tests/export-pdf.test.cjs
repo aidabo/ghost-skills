@@ -83,7 +83,9 @@ test('directory listing excludes output files and freshness check honors force',
     fs.mkdirSync(path.join(source, 'nested'));
     const nestedMarkdown = path.join(source, 'nested', 'deep.md');
     fs.writeFileSync(nestedMarkdown, '# Deep');
-    assert.ok(listMarkdownFiles(source, parentOutput).includes(nestedMarkdown));
+    assert.deepEqual(listMarkdownFiles(source, temp), [markdown, nestedMarkdown, path.join(output, 'generated.md')]);
+    assert.deepEqual(listMarkdownFiles(source, parentOutput), [markdown, nestedMarkdown, path.join(output, 'generated.md')]);
+    assert.deepEqual(listMarkdownFiles(source, output), [markdown, nestedMarkdown]);
     assert.equal(shouldSkip(markdown, pdf, false, [tool]), true);
     assert.equal(shouldSkip(markdown, pdf, true, [tool]), false);
     assert.equal(shouldSkip(markdown, path.join(output, 'missing.pdf'), false, [tool]), false);
@@ -103,9 +105,10 @@ test('builds safely quoted Windows Mermaid command arguments', () => {
   );
   assert.equal(spawn.command, 'cmd.exe');
   assert.deepEqual(spawn.args.slice(0, 3), ['/d', '/s', '/c']);
-  assert.match(spawn.args[3], /"C:\\Program Files\\mmdc\.cmd"/);
-  assert.match(spawn.args[3], /"C:\\Temp Folder\\diagram\.mmd"/);
-  assert.match(spawn.args[3], /"C:\\Output Folder\\diagram\.svg"/);
+  assert.equal(
+    spawn.args[3],
+    '""C:\\Program Files\\mmdc.cmd" "-i" "C:\\Temp Folder\\diagram.mmd" "-o" "C:\\Output Folder\\diagram.svg""',
+  );
   assert.equal(spawn.options.windowsVerbatimArguments, true);
 });
 

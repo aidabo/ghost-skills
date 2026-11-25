@@ -94,7 +94,7 @@ function buildMermaidSpawn(mermaidCli, cliArgs, platform = process.platform) {
   const commandLine = [mermaidCli, ...cliArgs].map(quoteWindowsCommandArg).join(' ');
   return {
     command: 'cmd.exe',
-    args: ['/d', '/s', '/c', commandLine],
+    args: ['/d', '/s', '/c', `"${commandLine}"`],
     options: { shell: false, windowsVerbatimArguments: true, windowsHide: true },
   };
 }
