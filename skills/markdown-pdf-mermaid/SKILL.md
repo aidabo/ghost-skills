@@ -15,6 +15,7 @@ Produce PDFs that preserve the source document's meaning and rendered content. A
 4. Convert one Markdown file with `node <skill-directory>/scripts/export-pdf.cjs <file.md> [output.pdf] [--force]`. For a directory, pass the directory and optionally an output directory: `node <skill-directory>/scripts/export-pdf.cjs <markdown-directory> [pdf-directory] [--force]`. A file defaults to a sibling PDF; a directory defaults to `<input>/pdf/` and preserves its subdirectories. Use `--force` after clone/checkout or before distribution because Git does not preserve modification times.
 5. The helper renders Mermaid blocks to SVG before browser printing. It also normalizes common status emoji labels for portable display, retains external and in-document links, and removes machine-local file links while keeping their text.
 6. Preserve Markdown source files. The helper writes only PDF output and skips current PDFs unless `--force` is supplied. Set `CHROME_BIN` or `MERMAID_CLI` only when the bundled browser/CLI is not discoverable; set `PUPPETEER_NO_SANDBOX=1` only in restricted container environments.
+   The freshness check tracks Markdown and exporter tool files, not referenced image mtimes. Use `--force` after changing an image or other relative asset.
 
 ## Validation
 

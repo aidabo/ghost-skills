@@ -53,7 +53,7 @@ function listMarkdownFiles(root, excludedDirectory) {
     for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
       const item = path.join(directory, entry.name);
       if (entry.isDirectory()) {
-        if (excludedDirectory && isPathInside(excludedDirectory, item)) continue;
+        if (excludedDirectory && isPathInside(root, excludedDirectory) && isPathInside(excludedDirectory, item)) continue;
         walk(item);
       } else if (entry.isFile() && entry.name.toLowerCase().endsWith('.md')) {
         files.push(item);
@@ -80,6 +80,23 @@ function findMermaidCli() {
   const executable = process.platform === 'win32' ? 'mmdc.cmd' : 'mmdc';
   const localPath = path.join(skillRoot, 'node_modules', '.bin', executable);
   return fs.existsSync(localPath) ? localPath : executable;
+}
+
+function quoteWindowsCommandArg(value) {
+  const text = String(value);
+  return `"${text.replace(/(\\*)"/g, '$1$1\\"').replace(/(\\+)$/g, '$1$1')}"`;
+}
+
+function buildMermaidSpawn(mermaidCli, cliArgs, platform = process.platform) {
+  if (platform !== 'win32') {
+    return { command: mermaidCli, args: cliArgs, options: { shell: false, windowsHide: true } };
+  }
+  const commandLine = [mermaidCli, ...cliArgs].map(quoteWindowsCommandArg).join(' ');
+  return {
+    command: 'cmd.exe',
+    args: ['/d', '/s', '/c', commandLine],
+    options: { shell: false, windowsVerbatimArguments: true, windowsHide: true },
+  };
 }
 
 function shouldSkip(sourceFile, outputFile, force, toolFiles) {
@@ -149,10 +166,10 @@ async function renderOne({ sourceFile, outputFile, relativePath, counts, browser
         fs.writeFileSync(configFile, JSON.stringify(browserConfig));
         cliArgs.push('-p', configFile);
       }
-      const result = spawnSync(mermaidCli, cliArgs, {
+      const spawn = buildMermaidSpawn(mermaidCli, cliArgs);
+      const result = spawnSync(spawn.command, spawn.args, {
+        ...spawn.options,
         encoding: 'utf8',
-        shell: process.platform === 'win32',
-        windowsHide: true,
       });
       if (result.error || result.status !== 0 || !fs.existsSync(svgFile)) {
         throw new Error(`Mermaid rendering failed in ${relativePath}: ${result.stderr || result.error || result.stdout}`);
@@ -249,4 +266,4 @@ async function main(args = process.argv.slice(2)) {
 
 if (require.main === module) main().catch(error => { console.error(error); process.exitCode = 1; });
 
-module.exports = { listMarkdownFiles, parseArgs, renderOne, shouldSkip, validatePdf };
+module.exports = { buildMermaidSpawn, listMarkdownFiles, parseArgs, renderOne, shouldSkip, validatePdf };

@@ -6,7 +6,7 @@ const os = require('node:os');
 const path = require('node:path');
 const test = require('node:test');
 const { installPdfMarkdownRules, isChineseDocument, isExternalOrFragmentLink, isPathInside, replaceStatusLabels, toFileUrl } = require('../scripts/export-pdf-rules.cjs');
-const { listMarkdownFiles, parseArgs, shouldSkip, validatePdf } = require('../scripts/export-pdf.cjs');
+const { buildMermaidSpawn, listMarkdownFiles, parseArgs, shouldSkip, validatePdf } = require('../scripts/export-pdf.cjs');
 
 function markdownIt() {
   try {
@@ -79,6 +79,11 @@ test('directory listing excludes output files and freshness check honors force',
     fs.utimesSync(tool, old, old);
     fs.utimesSync(pdf, current, current);
     assert.deepEqual(listMarkdownFiles(source, output), [markdown]);
+    const parentOutput = path.join(temp, 'exports');
+    fs.mkdirSync(path.join(source, 'nested'));
+    const nestedMarkdown = path.join(source, 'nested', 'deep.md');
+    fs.writeFileSync(nestedMarkdown, '# Deep');
+    assert.ok(listMarkdownFiles(source, parentOutput).includes(nestedMarkdown));
     assert.equal(shouldSkip(markdown, pdf, false, [tool]), true);
     assert.equal(shouldSkip(markdown, pdf, true, [tool]), false);
     assert.equal(shouldSkip(markdown, path.join(output, 'missing.pdf'), false, [tool]), false);
@@ -88,6 +93,20 @@ test('directory listing excludes output files and freshness check honors force',
   } finally {
     fs.rmSync(temp, { recursive: true, force: true });
   }
+});
+
+test('builds safely quoted Windows Mermaid command arguments', () => {
+  const spawn = buildMermaidSpawn(
+    'C:\\Program Files\\mmdc.cmd',
+    ['-i', 'C:\\Temp Folder\\diagram.mmd', '-o', 'C:\\Output Folder\\diagram.svg'],
+    'win32',
+  );
+  assert.equal(spawn.command, 'cmd.exe');
+  assert.deepEqual(spawn.args.slice(0, 3), ['/d', '/s', '/c']);
+  assert.match(spawn.args[3], /"C:\\Program Files\\mmdc\.cmd"/);
+  assert.match(spawn.args[3], /"C:\\Temp Folder\\diagram\.mmd"/);
+  assert.match(spawn.args[3], /"C:\\Output Folder\\diagram\.svg"/);
+  assert.equal(spawn.options.windowsVerbatimArguments, true);
 });
 
 test('PDF validation rejects invalid files and local file URIs', () => {
