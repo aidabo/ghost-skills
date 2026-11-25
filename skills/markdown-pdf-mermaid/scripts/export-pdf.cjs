@@ -94,6 +94,7 @@ function buildMermaidSpawn(mermaidCli, cliArgs, platform = process.platform) {
   const commandLine = [mermaidCli, ...cliArgs].map(quoteWindowsCommandArg).join(' ');
   return {
     command: 'cmd.exe',
+    // /s strips the first and last quote after /c; this outer pair preserves each inner argument quote.
     args: ['/d', '/s', '/c', `"${commandLine}"`],
     options: { shell: false, windowsVerbatimArguments: true, windowsHide: true },
   };
@@ -266,4 +267,4 @@ async function main(args = process.argv.slice(2)) {
 
 if (require.main === module) main().catch(error => { console.error(error); process.exitCode = 1; });
 
-module.exports = { buildMermaidSpawn, listMarkdownFiles, parseArgs, renderOne, shouldSkip, validatePdf };
+module.exports = { buildMermaidSpawn, listMarkdownFiles, parseArgs, quoteWindowsCommandArg, renderOne, shouldSkip, validatePdf };

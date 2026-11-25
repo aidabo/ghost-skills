@@ -6,7 +6,7 @@ const os = require('node:os');
 const path = require('node:path');
 const test = require('node:test');
 const { installPdfMarkdownRules, isChineseDocument, isExternalOrFragmentLink, isPathInside, replaceStatusLabels, toFileUrl } = require('../scripts/export-pdf-rules.cjs');
-const { buildMermaidSpawn, listMarkdownFiles, parseArgs, shouldSkip, validatePdf } = require('../scripts/export-pdf.cjs');
+const { buildMermaidSpawn, listMarkdownFiles, parseArgs, quoteWindowsCommandArg, shouldSkip, validatePdf } = require('../scripts/export-pdf.cjs');
 
 function markdownIt() {
   try {
@@ -98,6 +98,8 @@ test('directory listing excludes output files and freshness check honors force',
 });
 
 test('builds safely quoted Windows Mermaid command arguments', () => {
+  assert.equal(quoteWindowsCommandArg(''), '""');
+  assert.equal(quoteWindowsCommandArg('C:\\dir\\'), '"C:\\dir\\\\"');
   const spawn = buildMermaidSpawn(
     'C:\\Program Files\\mmdc.cmd',
     ['-i', 'C:\\Temp Folder\\diagram.mmd', '-o', 'C:\\Output Folder\\diagram.svg'],
