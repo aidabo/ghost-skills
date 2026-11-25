@@ -100,6 +100,7 @@ test('directory listing excludes output files and freshness check honors force',
 test('builds safely quoted Windows Mermaid command arguments', () => {
   assert.equal(quoteWindowsCommandArg(''), '""');
   assert.equal(quoteWindowsCommandArg('C:\\dir\\'), '"C:\\dir\\\\"');
+  assert.equal(quoteWindowsCommandArg('a\\"b'), '"a\\\\\\"b"');
   const spawn = buildMermaidSpawn(
     'C:\\Program Files\\mmdc.cmd',
     ['-i', 'C:\\Temp Folder\\diagram.mmd', '-o', 'C:\\Output Folder\\diagram.svg'],

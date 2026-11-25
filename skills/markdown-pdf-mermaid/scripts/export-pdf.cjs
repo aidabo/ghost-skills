@@ -95,6 +95,7 @@ function buildMermaidSpawn(mermaidCli, cliArgs, platform = process.platform) {
   return {
     command: 'cmd.exe',
     // /s strips the first and last quote after /c; this outer pair preserves each inner argument quote.
+    // cmd.exe still expands %VAR% inside quotes; callers should avoid percent signs in Windows paths.
     args: ['/d', '/s', '/c', `"${commandLine}"`],
     options: { shell: false, windowsVerbatimArguments: true, windowsHide: true },
   };
@@ -267,4 +268,5 @@ async function main(args = process.argv.slice(2)) {
 
 if (require.main === module) main().catch(error => { console.error(error); process.exitCode = 1; });
 
+// quoteWindowsCommandArg is exported for focused cross-platform boundary tests.
 module.exports = { buildMermaidSpawn, listMarkdownFiles, parseArgs, quoteWindowsCommandArg, renderOne, shouldSkip, validatePdf };
